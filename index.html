@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Josh Talks AI | Frontier Voice Research</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background-color: #050505; color: #ffffff; font-family: 'Inter', sans-serif; }
+        .glass { background: rgba(255, 255, 255, 0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); }
+        .hero-gradient { background: radial-gradient(circle at center, #111 0%, #050505 100%); }
+    </style>
+</head>
+<body class="hero-gradient">
+    <nav class="flex justify-between items-center p-6 max-w-7xl mx-auto">
+        <div class="text-xl font-bold tracking-tighter">JOSH TALKS AI</div>
+        <div class="space-x-8 text-sm text-gray-400">
+            <a href="https://voicearena.com" class="hover:text-white transition">VoiceArena</a>
+            <a href="https://ai.joshtalks.com" class="hover:text-white transition">Research</a>
+            <a href="#" class="px-4 py-2 glass rounded-full text-white">Contact Labs</a>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto text-center pt-24 pb-12 px-6">
+        <h1 class="text-5xl md:text-7xl font-bold tracking-tight mb-6">
+            Building the infrastructure for <span class="text-gray-500">Voice AI.</span>
+        </h1>
+        <p class="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mb-10">
+            We provide high-fidelity datasets, pairwise evaluations, and benchmarking for the world's leading AI labs.
+        </p>
+        <div class="flex flex-col md:flex-row gap-4 justify-center">
+            <a href="https://voicearena.com/arena" class="px-8 py-4 bg-white text-black font-semibold rounded-lg hover:bg-gray-200 transition">
+                Explore VoiceArena
+            </a>
+            <a href="https://voicearena.com/tts-methodology" class="px-8 py-4 glass font-semibold rounded-lg hover:bg-white/10 transition">
+                Our Methodology
+            </a>
+        </div>
+    </main>
+
+    <section class="max-w-7xl mx-auto grid md:grid-cols-3 gap-6 p-6">
+        <div class="glass p-8 rounded-2xl">
+            <h3 class="text-lg font-semibold mb-2">VoiceArena</h3>
+            <p class="text-gray-400 text-sm">The measurement layer for voice AI. Human-in-the-loop pairwise evaluation for SOTA models.</p>
+        </div>
+        <div class="glass p-8 rounded-2xl">
+            <h3 class="text-lg font-semibold mb-2">Datasets</h3>
+            <p class="text-gray-400 text-sm">Massive-scale speech and voice datasets curated for training frontier foundation models.</p>
+        </div>
+        <div class="glass p-8 rounded-2xl">
+            <h3 class="text-lg font-semibold mb-2">Research</h3>
+            <p class="text-gray-400 text-sm">Pushing the boundaries of speech synthesis and evaluation metrics with global partners.</p>
+        </div>
+    </section>
+</body>
+</html>
