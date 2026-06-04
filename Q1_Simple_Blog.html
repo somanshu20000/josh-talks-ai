@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Why AI Voices Still Get Things Wrong — A Plain-Language Breakdown | VoiceArena</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --dark:#FFFFFF; --dark2:#F0F5FA; --dark3:#E8EFF6;
+    --teal:#1687C9; --teal2:#0E5F8F; --white:#FFFFFF;
+    --offw:#F7FAFC; --gray:#64748B; --grayL:#CBD5E1;
+    --text:#111827; --card:#EBF5FF; --accent:#F47B35;
+  }
+  *, *::before, *::after { box-sizing:border-box; margin:0; padding:0; }
+  html { scroll-behavior:smooth; }
+  body { font-family:'DM Sans',sans-serif; background:#FFFFFF; color:#111827; line-height:1.8; font-size:17px; }
+
+  nav { position:sticky; top:0; z-index:100; background:rgba(255,255,255,0.97); backdrop-filter:blur(12px); border-bottom:1px solid #E2E8F0; display:flex; align-items:center; justify-content:space-between; padding:0 clamp(1rem,5vw,3rem); height:56px; }
+  .nav-brand { font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:500; color:var(--teal); letter-spacing:2px; text-decoration:none; }
+  .nav-right { display:flex; gap:1.5rem; align-items:center; }
+  .nav-right a { color:var(--gray); font-size:13px; text-decoration:none; transition:color .2s; }
+  .nav-right a:hover { color:#111827; }
+  .nav-pill { background:var(--teal); color:#FFFFFF!important; padding:6px 14px; border-radius:20px; font-weight:600!important; }
+
+  .hero { max-width:780px; margin:0 auto; padding:clamp(3rem,8vw,6rem) clamp(1rem,5vw,2rem) 3rem; }
+  .kicker { font-family:'JetBrains Mono',monospace; font-size:11px; font-weight:500; color:var(--teal); letter-spacing:2px; text-transform:uppercase; display:inline-flex; align-items:center; gap:8px; margin-bottom:1.5rem; }
+  .kicker::before { content:''; display:inline-block; width:24px; height:1px; background:var(--teal); }
+  h1 { font-family:'DM Serif Display',serif; font-size:clamp(2.2rem,5vw,3.2rem); line-height:1.15; color:#111827; margin-bottom:1.25rem; font-weight:400; }
+  h1 em { color:var(--teal); font-style:italic; }
+  .subheadline { font-size:1.1rem; color:var(--gray); line-height:1.75; margin-bottom:2rem; font-weight:300; }
+  .meta-bar { display:flex; align-items:center; gap:1.5rem; flex-wrap:wrap; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gray); padding-bottom:2rem; border-bottom:1px solid #E2E8F0; }
+  .meta-dot { color:var(--teal); }
+
+  .stats-bar { max-width:780px; margin:0 auto; display:grid; grid-template-columns:repeat(4,1fr); gap:1px; background:#E2E8F0; border:1px solid #E2E8F0; border-radius:12px; overflow:hidden; margin-bottom:3.5rem; }
+  .stat-cell { background:var(--dark3); padding:1.5rem 1rem; text-align:center; transition:background .2s; }
+  .stat-cell:hover { background:#DBEAFE; }
+  .stat-n { font-family:'DM Serif Display',serif; font-size:2rem; color:var(--teal); line-height:1; margin-bottom:6px; }
+  .stat-l { font-size:11px; color:var(--gray); line-height:1.4; }
+
+  .content { max-width:780px; margin:0 auto; padding:0 clamp(1rem,5vw,2rem) 5rem; }
+  h2 { font-family:'DM Serif Display',serif; font-size:clamp(1.5rem,3vw,2rem); color:#111827; margin:3.5rem 0 1rem; line-height:1.3; font-weight:400; }
+  h3 { font-size:1.05rem; font-weight:600; color:var(--teal); margin:2rem 0 0.6rem; }
+  p { color:#374151; margin-bottom:1.3rem; font-weight:300; }
+  strong { color:#111827; font-weight:600; }
+  em { color:var(--teal); font-style:italic; }
+
+  /* Analogy box */
+  .analogy { background:#F0F9FF; border:1px solid #BAE6FD; border-radius:12px; padding:1.25rem 1.5rem; margin:1.5rem 0; }
+  .analogy-label { font-size:10px; font-weight:700; color:#0369A1; letter-spacing:1.5px; text-transform:uppercase; font-family:'JetBrains Mono',monospace; margin-bottom:8px; }
+  .analogy p { color:#1E3A5F; margin:0; font-size:15px; line-height:1.7; }
+
+  blockquote { border-left:3px solid var(--teal); margin:2rem 0; padding:1.25rem 1.5rem; background:rgba(22,135,201,0.06); border-radius:0 8px 8px 0; font-family:'DM Serif Display',serif; font-style:italic; font-size:1.05rem; color:#1F2937; line-height:1.6; }
+
+  .tbl-wrap { overflow-x:auto; margin:1.5rem 0 2rem; border-radius:10px; border:1px solid #E2E8F0; }
+  table { width:100%; border-collapse:collapse; font-size:13.5px; }
+  thead tr { background:#F0F5FA; }
+  thead th { padding:12px 14px; text-align:left; color:var(--gray); font-family:'JetBrains Mono',monospace; font-size:11px; letter-spacing:1px; font-weight:500; border-bottom:1px solid #E2E8F0; }
+  tbody tr { border-bottom:1px solid #F1F5F9; transition:background .15s; }
+  tbody tr:hover { background:#F7FAFC; }
+  tbody tr:nth-child(even) { background:#FAFBFC; }
+  td { padding:11px 14px; color:#4B5563; vertical-align:top; line-height:1.6; }
+  td:first-child { color:#111827; font-weight:500; }
+  td.hl { color:var(--teal); font-weight:500; }
+  td.warn { color:#D97706; font-weight:500; }
+  td.dim { color:#94A3B8; font-size:12px; }
+  .tbl-caption { font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gray); text-align:center; margin-top:-1rem; margin-bottom:2rem; font-style:italic; }
+
+  .defect-grid { display:flex; flex-direction:column; gap:1rem; margin:1.5rem 0 2rem; }
+  .defect-card { border:1px solid #E2E8F0; border-radius:12px; overflow:hidden; transition:border-color .2s, transform .2s; cursor:default; }
+  .defect-card:hover { border-color:rgba(22,135,201,0.4); transform:translateX(4px); }
+  .defect-header { display:flex; justify-content:space-between; align-items:center; padding:1rem 1.25rem; background:#F7FAFC; }
+  .defect-title { font-weight:600; font-size:0.95rem; }
+  .defect-pct { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--teal); background:rgba(22,135,201,0.1); padding:4px 10px; border-radius:20px; font-weight:500; white-space:nowrap; }
+  .defect-body { padding:1rem 1.25rem; color:#6B7280; font-size:14.5px; line-height:1.7; font-weight:300; }
+  .defect-bar { height:3px; background:rgba(22,135,201,0.12); }
+  .defect-bar-fill { height:3px; background:var(--teal); border-radius:0 2px 2px 0; transition:width .6s ease; }
+  .defect-card.hard .defect-pct { color:var(--accent); background:rgba(244,123,53,0.1); }
+  .defect-card.hard .defect-bar-fill { background:#F47B35; }
+  .defect-card.hard:hover { border-color:rgba(244,123,53,0.4); }
+
+  .lang-badge { display:inline-block; padding:2px 8px; border-radius:4px; font-size:11px; font-weight:600; font-family:'JetBrains Mono',monospace; }
+  .lang-en { background:rgba(22,135,201,0.12); color:#1687C9; }
+  .lang-hi { background:rgba(249,115,22,0.2); color:#EA580C; }
+  .lang-ja { background:rgba(168,85,247,0.2); color:#9333EA; }
+  .lang-pt { background:rgba(34,197,94,0.2); color:#16A34A; }
+  .lang-vi { background:rgba(236,72,153,0.2); color:#DB2777; }
+  .lang-ar { background:rgba(245,158,11,0.2); color:#D97706; }
+
+  .callout { border:1px solid rgba(244,123,53,0.35); border-radius:12px; padding:1.5rem 1.75rem; margin:2rem 0; background:rgba(244,123,53,0.06); }
+  .callout h4 { color:#F47B35; font-size:0.8rem; letter-spacing:1.5px; text-transform:uppercase; font-family:'JetBrains Mono',monospace; margin-bottom:0.75rem; }
+  .callout p { color:#374151; font-size:15px; margin:0; }
+  .callout.teal { border-color:rgba(22,135,201,0.3); background:rgba(22,135,201,0.05); }
+  .callout.teal h4 { color:var(--teal); }
+
+  .priority-grid { display:flex; flex-direction:column; gap:0.75rem; margin:1.5rem 0 2rem; }
+  .priority-card { border:1px solid #E2E8F0; border-radius:10px; overflow:hidden; transition:border-color .2s; }
+  .priority-card:hover { border-color:rgba(22,135,201,0.35); }
+  .priority-header { padding:0.9rem 1.2rem; background:#F7FAFC; display:flex; align-items:center; gap:10px; font-weight:600; font-size:0.95rem; color:#111827; }
+  .priority-num { width:24px; height:24px; border-radius:50%; background:var(--teal); color:#FFFFFF; display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex-shrink:0; }
+  .priority-body { padding:0.9rem 1.2rem; color:#6B7280; font-size:14px; line-height:1.7; font-weight:300; }
+
+  .footer-cta { background:#F0F5FA; border:1px solid #E2E8F0; border-radius:16px; padding:2.5rem; margin:3rem 0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1.5rem; }
+  .footer-cta-left h3 { color:#111827; font-family:'DM Serif Display',serif; font-weight:400; font-size:1.4rem; margin-bottom:8px; }
+  .footer-cta-left p { color:#64748B; font-size:14px; margin:0; }
+  .footer-cta-links { display:flex; flex-direction:column; gap:6px; }
+  .cta-link { font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--teal); text-decoration:none; display:flex; align-items:center; gap:6px; transition:gap .2s; }
+  .cta-link:hover { gap:10px; }
+
+  .method-note { border-top:1px solid #E2E8F0; padding-top:1.5rem; margin-top:2rem; font-size:13px; color:#64748B; line-height:1.7; }
+  footer { border-top:1px solid #E2E8F0; padding:2rem clamp(1rem,5vw,3rem); display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:1rem; font-family:'JetBrains Mono',monospace; font-size:11px; color:#64748B; }
+  footer a { color:var(--teal); text-decoration:none; }
+
+  @media(max-width:600px) {
+    .stats-bar { grid-template-columns:repeat(2,1fr); }
+    .nav-right a:not(.nav-pill) { display:none; }
+    .footer-cta { flex-direction:column; }
+    .defect-header { flex-direction:column; align-items:flex-start; gap:8px; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="https://voicearena.com">VOICEARENA</a>
+  <div class="nav-right">
+    <a href="https://voicearena.com">Leaderboard</a>
+    <a href="https://voicearena.com/arena">Arena</a>
+    <a href="https://ai.joshtalks.com" class="nav-pill">Josh Talks AI</a>
+  </div>
+</nav>
+
+<div class="hero">
+  <div class="kicker">Voice AI Analysis · June 2025</div>
+  <h1>
+    Why AI Voices Still Get Things Wrong —<br>
+    <em>A Plain-Language Breakdown of 44,387 Human Ratings</em>
+  </h1>
+  <p class="subheadline">
+    We asked 44,387 real people to listen to two AI voices and pick the better one.
+    Then we read what they wrote about why one voice was worse.
+    Here is what they found — in plain language, with no jargon.
+  </p>
+  <div class="meta-bar">
+    <span>VoiceArena Research</span>
+    <span class="meta-dot">·</span>
+    <span>44,387 human listening tests</span>
+    <span class="meta-dot">·</span>
+    <span>June 2025</span>
+    <span class="meta-dot">·</span>
+    <span>voicearena.com</span>
+  </div>
+</div>
+
+<div style="max-width:780px;margin:0 auto;padding:0 clamp(1rem,5vw,2rem)">
+  <div class="stats-bar">
+    <div class="stat-cell">
+      <div class="stat-n">44,387</div>
+      <div class="stat-l">Real people listened and voted</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-n">49%</div>
+      <div class="stat-l">Also wrote a comment explaining why (21,756 people)</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-n">9</div>
+      <div class="stat-l">AI voice products tested against each other</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-n">6</div>
+      <div class="stat-l">Languages tested: English, Hindi, Japanese, Arabic, Portuguese, Vietnamese</div>
+    </div>
+  </div>
+</div>
+
+<div class="content">
+
+  <h2>First — What Is an AI Voice, and Why Are We Testing It?</h2>
+
+  <p>
+    An AI voice (also called a TTS model — Text-To-Speech) is software that reads any
+    written text aloud in a human-like voice. You have heard it everywhere.
+    The Google Maps navigation voice? That is TTS. The Siri voice on iPhone? TTS.
+    The automated voice when you call a bank's helpline? Also TTS.
+  </p>
+  <p>
+    Many big companies — Google, OpenAI, ElevenLabs, Microsoft, Cartesia, and others —
+    have built their own AI voice products. Each one sounds a little different.
+    Some sound very natural. Some sound robotic. Some handle Hindi well. Some do not.
+  </p>
+  <p>
+    <strong>VoiceArena is a platform that tests these AI voices against each other</strong>
+    using real human listeners — not machines — to decide which one sounds better.
+    Think of it like a blind taste test, except instead of food, people are listening to voices.
+  </p>
+
+  <div class="analogy">
+    <div class="analogy-label">Simple analogy</div>
+    <p>
+      Imagine you are a judge on a singing show like Indian Idol.
+      Two contestants sing the same song. You listen to both — you do not know their names or backgrounds.
+      You pick who sounded better, and you write down exactly what went wrong with the other one.
+      VoiceArena does this same thing, except the "contestants" are AI voice products,
+      and 44,387 people are the judges.
+    </p>
+  </div>
+
+  <h2>The Problem With Just Looking at Rankings</h2>
+
+  <p>
+    VoiceArena already publishes a ranking — which AI voice is number one, number two, and so on.
+    But a ranking alone is like a cricket scorecard that only shows the final score.
+    It tells you who won. It does not tell you <em>why</em> they won or what the losing team did wrong.
+  </p>
+  <p>
+    The more valuable information was hidden in the written comments. Nearly half the people
+    who voted (21,756 out of 44,387) also wrote a sentence or two explaining exactly
+    what they heard that was wrong. We read all those comments, grouped them by type,
+    and counted how often each type of problem came up.
+  </p>
+  <p>
+    The result is a ranked list of the 6 most common ways AI voices go wrong.
+    We call this the <strong>defect list</strong> — the specific mistakes that make
+    people choose one voice over another.
+  </p>
+
+  <div class="analogy">
+    <div class="analogy-label">Simple analogy</div>
+    <p>
+      Think of Zomato restaurant reviews. The star rating tells you the restaurant is rated 3.2 out of 5.
+      But it is the written reviews that tell you <em>why</em> — "biryani was cold",
+      "waiter was rude", "chicken was undercooked". Those written complaints are far more useful
+      to the restaurant owner than the star rating alone. Our analysis does the same thing
+      for AI voices.
+    </p>
+  </div>
+
+  <blockquote>
+    "Knowing your AI voice ranked 5th is useless. Knowing that 40% of the people
+    who disliked it said it mispronounced words — and that in Japanese,
+    nearly half of all complaints were about pronunciation — is something
+    you can actually fix."
+  </blockquote>
+
+  <h2>The 6 Most Common Ways AI Voices Go Wrong</h2>
+
+  <p>
+    These six categories came directly from what 21,756 real listeners wrote in their comments.
+    Each percentage tells you how often that specific type of complaint appeared
+    out of all the complaints collected.
+  </p>
+
+  <div class="defect-grid">
+
+    <div class="defect-card">
+      <div class="defect-bar"><div class="defect-bar-fill" style="width:39.9%"></div></div>
+      <div class="defect-header">
+        <span class="defect-title">1 — Said Words Wrong (Mispronunciation)</span>
+        <span class="defect-pct">39.9% of all complaints</span>
+      </div>
+      <div class="defect-body">
+        <strong>What this means:</strong> The AI voice said a word incorrectly.
+        It either stressed the wrong syllable (like saying "PHOtograph" as "phoTOgraph"),
+        substituted one sound for another, or made a word completely unrecognisable.
+        <br><br>
+        <strong>When it happens most:</strong> Names of people and places, technical words,
+        and sentences that mix two languages (like an English word inside a Hindi sentence).
+        <br><br>
+        <strong>Why it matters:</strong> This is the single biggest complaint across all 6 languages
+        and all 9 AI voice products. Nearly 4 in every 10 complaints were about this.
+        It is the number one problem the AI voice industry needs to fix.
+      </div>
+    </div>
+
+    <div class="defect-card">
+      <div class="defect-bar"><div class="defect-bar-fill" style="width:25.1%"></div></div>
+      <div class="defect-header">
+        <span class="defect-title">2 — Sounds Like a Robot (Unnatural/Robotic Voice)</span>
+        <span class="defect-pct">25.1% of all complaints</span>
+      </div>
+      <div class="defect-body">
+        <strong>What this means:</strong> The voice sounds mechanical, flat, or lifeless —
+        like the old automated voices you hear when you call a customer care number and
+        press 1 for English. The words are correct, but it does not feel like a real person speaking.
+        <br><br>
+        <strong>Where it is worst:</strong> English and Vietnamese listeners complained about this the most.
+        One specific AI product — OpenAI's voice — had 36 out of every 100 complaints about it
+        being robotic. That is the highest robotic rate of any product in the test.
+        <br><br>
+        <strong>Why it matters:</strong> People stop trusting a voice that sounds fake.
+        Even if every word is correct, a robotic tone makes listeners uncomfortable
+        and they will prefer the competitor.
+      </div>
+    </div>
+
+    <div class="defect-card">
+      <div class="defect-bar"><div class="defect-bar-fill" style="width:15.6%"></div></div>
+      <div class="defect-header">
+        <span class="defect-title">3 — Weird Pauses (Bad Timing / Irregular Pacing)</span>
+        <span class="defect-pct">15.6% of all complaints</span>
+      </div>
+      <div class="defect-body">
+        <strong>What this means:</strong> The voice stops or pauses in the wrong place —
+        like a news anchor who takes a breath in the middle of a word instead of at the end of a sentence.
+        Or rushes through the last part of a sentence as if it ran out of time.
+        <br><br>
+        <strong>Example:</strong> Imagine someone reading "Please meet me at the station... tomorrow morning"
+        but pausing after "the" instead — "Please meet me at the... station tomorrow morning."
+        It sounds strange and breaks the listener's concentration.
+        <br><br>
+        <strong>Interesting finding:</strong> Cartesia's AI voice had this as its number one complaint
+        (24 out of every 100 complaints about Cartesia were about bad timing).
+        This is the most model-specific finding — it points to a specific design issue in that product.
+      </div>
+    </div>
+
+    <div class="defect-card hard">
+      <div class="defect-bar"><div class="defect-bar-fill" style="width:7.8%"></div></div>
+      <div class="defect-header">
+        <span class="defect-title">4 — Made Up Words That Were Not There (Hallucination) ⚠️</span>
+        <span class="defect-pct">7.8% of all complaints</span>
+      </div>
+      <div class="defect-body">
+        <strong>What this means:</strong> The AI voice added words that were not in the original text.
+        You gave it a sentence to read, and it read that sentence — plus extra words it invented on its own.
+        <br><br>
+        <strong>Example:</strong> You typed "The meeting is at 3 PM."
+        The AI read "The meeting is at 3 thousand PM" — adding the word "thousand" that was never there.
+        Or it added a complete extra phrase at the end that you never wrote.
+        <br><br>
+        <strong>Why this is the most serious problem:</strong> This is not a quality issue.
+        This is a reliability issue. If an AI voice reads a medical instruction and
+        adds or changes words, it could cause real harm. Any listener who notices this
+        immediately loses trust in the product — and will almost always prefer the other voice.
+        <br><br>
+        <strong>Worst offender:</strong> xAI's Grok voice product had the highest rate of this problem.
+        About 11 in every 100 complaints about Grok were about it adding words that were not there.
+      </div>
+    </div>
+
+    <div class="defect-card hard">
+      <div class="defect-bar"><div class="defect-bar-fill" style="width:6.0%"></div></div>
+      <div class="defect-header">
+        <span class="defect-title">5 — Skipped Words That Were There (Missing Words) ⚠️</span>
+        <span class="defect-pct">6.0% of all complaints</span>
+      </div>
+      <div class="defect-body">
+        <strong>What this means:</strong> The AI voice skipped a word from the original sentence entirely.
+        The word was in the text, but the voice just... did not say it.
+        <br><br>
+        <strong>Example:</strong> You wrote "Please do <u>not</u> press the button."
+        The AI read "Please do press the button." — it dropped the word "not" completely.
+        The sentence now means the exact opposite of what you wrote.
+        <br><br>
+        <strong>Why this is also very serious:</strong> Just like problem #4 above,
+        this is not about sound quality — it is about accuracy and trust.
+        A voice assistant that drops words cannot be used in any important situation.
+        Arabic language listeners experienced this the most in this dataset.
+      </div>
+    </div>
+
+    <div class="defect-card">
+      <div class="defect-bar"><div class="defect-bar-fill" style="width:5.6%"></div></div>
+      <div class="defect-header">
+        <span class="defect-title">6 — Crackling / Static / Audio Glitches (Noise)</span>
+        <span class="defect-pct">5.6% of all complaints</span>
+      </div>
+      <div class="defect-body">
+        <strong>What this means:</strong> The audio itself had a technical problem —
+        a crackling sound, static, an echo, a syllable that repeated by mistake,
+        or the audio cutting off suddenly. These are not language problems — they are
+        like a bad phone connection or a microphone issue.
+        <br><br>
+        <strong>Interesting finding:</strong> ElevenLabs — one of the top-ranked products —
+        had the highest rate of this problem among the competitive products (15 in every 100 ElevenLabs complaints).
+        This suggests a technical issue in their audio processing pipeline, separate from
+        how natural or accurate the voice sounds.
+        <br><br>
+        <strong>Why even a small rate is a big deal:</strong> Any evaluation where
+        the listener hears a glitch is almost always a loss. There is no forgiveness for this.
+        It is like a singer hitting a wrong note on the highest note of the song — it ruins everything.
+      </div>
+    </div>
+
+  </div>
+
+  <div class="callout">
+    <h4>Two things that were claimed but are NOT in the data</h4>
+    <p>
+      Some earlier discussions about AI voice quality mentioned "emotional mismatch"
+      (the voice sounds emotionless) and "accent problems" (sounds like a foreigner speaking Hindi)
+      as major categories. When we looked at the actual complaint data from 44,387 real listeners,
+      <strong>neither of these appeared as structured complaint categories.</strong>
+      We have not included them in this list because they are not supported by the actual data.
+      Good research only reports what the data actually shows.
+    </p>
+  </div>
+
+  <h2>How Each AI Voice Product Fails Differently</h2>
+
+  <p>
+    Every AI voice product has its own specific weak point. Think of it like cricketers —
+    every batsman has a different weakness. One gets out on short-pitch deliveries.
+    Another struggles against spin. The table below shows each product's main problem
+    and how often it wins head-to-head against other voices.
+  </p>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>AI Voice Product</th>
+          <th>Biggest complaint about it</th>
+          <th>Second biggest complaint</th>
+          <th>Win rate (how often it beats the other voice)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Google Gemini 3.1 Flash</td>
+          <td>Sounds robotic (28.4%)</td>
+          <td>Mispronounced words (25.9%)</td>
+          <td class="hl">53.8% — best in the test</td>
+        </tr>
+        <tr>
+          <td>ElevenLabs v3</td>
+          <td>Mispronounced words (27.7%)</td>
+          <td class="warn">Crackling / audio glitches (15.0%) — highest noise rate among top products</td>
+          <td>41.6%</td>
+        </tr>
+        <tr>
+          <td>Sarvam Bulbul-V3 <span class="dim">(Hindi only)</span></td>
+          <td>Mispronounced words (24.1%)</td>
+          <td>Sounds robotic (23.6%)</td>
+          <td>33.3%</td>
+        </tr>
+        <tr>
+          <td>Cartesia Sonic-3</td>
+          <td class="warn">Bad timing / weird pauses (24.3%) — this product's signature problem</td>
+          <td>Mispronounced words (24.0%)</td>
+          <td>24.8%</td>
+        </tr>
+        <tr>
+          <td>MiniMax Speech 2.8</td>
+          <td>Sounds robotic (24.3%)</td>
+          <td>Mispronounced words (24.0%)</td>
+          <td>24.3%</td>
+        </tr>
+        <tr>
+          <td>OpenAI gpt-4o-mini-tts</td>
+          <td class="warn">Sounds robotic (36.2%) — highest robotic rate of any product</td>
+          <td>Mispronounced words (20.6%)</td>
+          <td>23.8%</td>
+        </tr>
+        <tr>
+          <td>Fish Audio S2 Pro</td>
+          <td>Sounds robotic (28.8%)</td>
+          <td>Bad timing / weird pauses (26.0%)</td>
+          <td>22.4%</td>
+        </tr>
+        <tr>
+          <td>xAI Grok TTS</td>
+          <td>Mispronounced words (25.2%)</td>
+          <td class="warn">Severely mispronounced (23.0%) — and highest hallucination rate</td>
+          <td>21.9%</td>
+        </tr>
+        <tr>
+          <td>Microsoft Azure Dragon</td>
+          <td class="warn">Sounds robotic (30.8%)</td>
+          <td>Mispronounced words (24.5%)</td>
+          <td class="warn">18.6% — lowest in the test</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="tbl-caption">Table 1 — Each AI voice product's specific problem areas, from 44,387 human listening tests. Percentages are out of that product's own complaints.</p>
+
+  <p>
+    The clear winner is <strong>Google Gemini 3.1 Flash TTS</strong> — it wins more than
+    half of all head-to-head comparisons. It is the benchmark that other products
+    are being compared against. Even Google's product, however, still has complaints
+    about sounding robotic and mispronouncing words — showing there is still room to improve
+    even at the top.
+  </p>
+
+  <h2>Does the Same Problem Exist in Every Language?</h2>
+
+  <p>
+    No — and this is one of the most important findings.
+    <strong>Different languages have very different main problems.</strong>
+    A product that works well in English might fail badly in Japanese.
+    A problem that is rare in English might be very common in Arabic.
+  </p>
+
+  <div class="analogy">
+    <div class="analogy-label">Simple analogy</div>
+    <p>
+      Think of a chef who is excellent at making Italian food.
+      If you ask them to make a South Indian thali, they might struggle with
+      completely different problems — different spices, different techniques,
+      different expectations from the people eating it.
+      AI voice products have the same challenge across languages.
+    </p>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Language</th>
+          <th>Biggest problem in that language</th>
+          <th>Gap between best and worst product</th>
+          <th>Google's win rate in this language</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="lang-badge lang-en">English</span></td>
+          <td>Robotic voice (33%) + bad timing (30%) — pronunciation is actually the least bad here</td>
+          <td>27% gap</td>
+          <td class="hl">41%</td>
+        </tr>
+        <tr>
+          <td><span class="lang-badge lang-hi">Hindi</span></td>
+          <td>Robotic voice (27%) + mispronunciation (24%)</td>
+          <td>35% gap</td>
+          <td class="hl">52%</td>
+        </tr>
+        <tr>
+          <td><span class="lang-badge lang-ja">Japanese</span></td>
+          <td class="warn">Mispronounced words (49%) — nearly half of all complaints! Pronunciation is the dominant issue.</td>
+          <td class="warn">55% gap — biggest gap in the entire dataset</td>
+          <td class="hl">63%</td>
+        </tr>
+        <tr>
+          <td><span class="lang-badge lang-ar">Arabic</span></td>
+          <td class="warn">Mispronounced words (52%) — similar to Japanese, pronunciation dominates</td>
+          <td>42% gap</td>
+          <td class="hl">61%</td>
+        </tr>
+        <tr>
+          <td><span class="lang-badge lang-pt">Portuguese</span></td>
+          <td>Robotic voice (30%) + bad timing (15%)</td>
+          <td>34% gap</td>
+          <td class="hl">50%</td>
+        </tr>
+        <tr>
+          <td><span class="lang-badge lang-vi">Vietnamese</span></td>
+          <td>Robotic voice (33%)</td>
+          <td>35% gap</td>
+          <td class="hl">51%</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="tbl-caption">Table 2 — The main problem differs by language. Japanese and Arabic are primarily pronunciation problems. English is primarily a quality/naturalness problem.</p>
+
+  <p>
+    The most surprising finding here is <strong>Japanese</strong>.
+    If you only looked at the global data, you might think "robotic voice is the biggest problem."
+    But Japanese listeners said something very different — nearly 1 in 2 complaints about
+    Japanese AI voices was about pronunciation. The AI voices are saying Japanese words wrong.
+    That is a completely different problem that needs a completely different solution.
+  </p>
+
+  <div class="callout teal">
+    <h4>The India finding — Sarvam Bulbul-V3</h4>
+    <p>
+      Sarvam is an Indian AI company that built a voice product specifically for Hindi.
+      In this test, it was only evaluated in Hindi (2,473 tests) and won about 1 in 3 comparisons (33.3%).
+      Its main problem areas — pronunciation and robotic voice — are the same as the global average.
+      For companies building voice products specifically for Indian languages,
+      this is a direct, honest benchmark of where an India-focused product currently stands
+      against the global competition.
+    </p>
+  </div>
+
+  <h2>The Two Most Serious Problems (Problems 4 and 5)</h2>
+
+  <p>
+    Problems 1, 2, and 3 above are quality problems. The voice sounds bad, feels unnatural,
+    or has bad timing. These are annoying, but they are improvement opportunities.
+  </p>
+  <p>
+    Problems 4 and 5 — <strong>making up words</strong> and <strong>skipping words</strong> —
+    are in a completely different category. These are <strong>accuracy and trust problems.</strong>
+  </p>
+  <p>
+    Imagine if Google Maps occasionally added or removed a turn from your directions.
+    Not very often — maybe 1 in 12 trips. You might not even notice at first.
+    But the moment you notice it once, you stop trusting it completely.
+    That is exactly what hallucination and missing words do to an AI voice product.
+  </p>
+  <p>
+    For companies using AI voices in important settings — medical instructions, legal documents,
+    financial information, educational content — <strong>these two problems need to be fixed
+    before anything else.</strong> A beautiful-sounding voice that occasionally changes the
+    meaning of sentences is worse than a slightly robotic voice that is always accurate.
+  </p>
+
+  <h2>What Should AI Voice Companies Do Next?</h2>
+
+  <div class="priority-grid">
+    <div class="priority-card">
+      <div class="priority-header">
+        <div class="priority-num">1</div>
+        Fix pronunciation first — especially for Japanese and Arabic
+      </div>
+      <div class="priority-body">
+        Nearly 40% of all complaints globally are about pronunciation.
+        In Japanese and Arabic, it is nearly 50%. Before anything else,
+        AI voice teams should focus on making sure their product says words correctly
+        in every language they support — not just in English.
+      </div>
+    </div>
+    <div class="priority-card">
+      <div class="priority-header">
+        <div class="priority-num">2</div>
+        Check if your product is adding or removing words — and fix it immediately
+      </div>
+      <div class="priority-body">
+        xAI Grok's hallucination rate (11.6% of its complaints) is a red flag.
+        Every AI voice team should run a simple test: give the product 500 sentences
+        and check if the output matches the input word-for-word. Any mismatch is a critical bug.
+        This test takes one afternoon to run and could save the product's reputation.
+      </div>
+    </div>
+    <div class="priority-card">
+      <div class="priority-header">
+        <div class="priority-num">3</div>
+        For English: work on naturalness, not pronunciation
+      </div>
+      <div class="priority-body">
+        English is the one language where pronunciation is actually the least common complaint.
+        The bigger problem in English is sounding robotic and having bad timing.
+        OpenAI's product — with 36.2% of its English complaints being about sounding robotic —
+        should focus on making the voice feel more human, not on correcting pronunciations.
+      </div>
+    </div>
+    <div class="priority-card">
+      <div class="priority-header">
+        <div class="priority-num">4</div>
+        ElevenLabs: investigate the audio quality issue
+      </div>
+      <div class="priority-body">
+        ElevenLabs is ranked second overall, but has the highest crackling/static rate
+        among competitive products (15% of its complaints).
+        This is a technical pipeline problem — not a language problem — and should be
+        fixable separately from improving naturalness.
+      </div>
+    </div>
+    <div class="priority-card">
+      <div class="priority-header">
+        <div class="priority-num">5</div>
+        Do not treat all languages as the same problem
+      </div>
+      <div class="priority-body">
+        English rankings are not a good predictor of Japanese or Arabic performance.
+        A product that scores well in English can fail badly in Japanese — and the
+        reasons are completely different. Each language needs its own evaluation,
+        its own training data focus, and its own improvement roadmap.
+      </div>
+    </div>
+  </div>
+
+  <h2>Why Listening to Real People Beats Computer Testing</h2>
+
+  <p>
+    There are automated computer programs that test AI voice quality — they give
+    a score based on acoustic measurements and technical analysis. These are useful
+    for fast testing. But they have a fundamental limitation.
+  </p>
+  <p>
+    <strong>A computer cannot tell you that it noticed the word "thousand" was added.</strong>
+    A computer cannot tell you that the pause felt wrong at that specific point in the sentence.
+    A computer cannot tell you that the Hindi voice sounds "like it was trained on non-Indian data."
+  </p>
+  <p>
+    Only a real human listener, writing down what they actually heard, can give you that signal.
+    The 21,756 written comments in VoiceArena's data contain
+    the most detailed, honest, and useful feedback on AI voice quality available anywhere.
+    This analysis makes that feedback easy to act on — by converting 44,387 individual
+    human opinions into six clear categories of problems, ranked by how serious they are.
+  </p>
+
+  <div class="footer-cta">
+    <div class="footer-cta-left">
+      <h3>Try VoiceArena Yourself</h3>
+      <p>
+        Listen to two AI voices and vote for the better one.<br>
+        See live rankings across 9 products and 6 languages.
+      </p>
+    </div>
+    <div class="footer-cta-links">
+      <a class="cta-link" href="https://voicearena.com">→ See the rankings</a>
+      <a class="cta-link" href="https://voicearena.com/arena">→ Listen and vote yourself</a>
+      <a class="cta-link" href="https://ai.joshtalks.com">→ Josh Talks AI</a>
+    </div>
+  </div>
+
+  <p class="method-note">
+    <strong>How we did this analysis:</strong>
+    We analysed 44,387 real human votes collected on VoiceArena across 6 languages
+    (English, Hindi, Japanese, Arabic, Portuguese, Vietnamese).
+    Each vote involved a real person listening to two AI voices and picking the better one.
+    About 49% of voters also wrote a comment explaining their choice.
+    We extracted structured complaint labels (called defect tags) from these comments
+    and counted how often each type of complaint appeared.
+    All percentages in this article come from that count.
+    The 9 AI products tested were: Google Gemini 3.1 Flash TTS, ElevenLabs Eleven v3,
+    Sarvam Bulbul-V3, Cartesia Sonic-3, MiniMax Speech 2.8 HD, OpenAI gpt-4o-mini-tts,
+    Fish Audio S2 Pro, xAI Grok TTS, and Microsoft Azure Dragon HD Omni.
+    Sarvam was only tested in Hindi.
+  </p>
+
+</div>
+
+<footer>
+  <span>© 2025 Josh Talks AI / VoiceArena</span>
+  <span>
+    <a href="https://voicearena.com">voicearena.com</a>
+    &nbsp;·&nbsp;
+    <a href="https://ai.joshtalks.com">ai.joshtalks.com</a>
+  </span>
+</footer>
+
+<script>
+  const io = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const fill = e.target.querySelector('.defect-bar-fill');
+        if (fill) {
+          const w = fill.style.width;
+          fill.style.width = '0';
+          requestAnimationFrame(() => { fill.style.width = w; });
+        }
+        io.unobserve(e.target);
+      }
+    });
+  }, {threshold: 0.3});
+  document.querySelectorAll('.defect-card').forEach(c => io.observe(c));
+</script>
+</body>
+</html>
